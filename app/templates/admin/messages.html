@@ -1,0 +1,65 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Messages — Admin PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Contact Messages</h1><p>All messages submitted through the contact form.</p></div>
+</div>
+<div class="admin-card">
+  {% if messages %}
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for msg in messages %}
+        <tr>
+          <td><strong>{{ msg.name }}</strong></td>
+          <td>{{ msg.email }}</td>
+          <td>{{ msg.subject }}</td>
+          <td>{{ msg.created_at.strftime('%b %d, %Y') }}</td>
+          <td><span class="status-badge {{ 'status-approved' if msg.is_read else 'status-pending' }}">{{ 'Read' if msg.is_read else 'Unread' }}</span></td>
+          <td style="display:flex;gap:6px">
+            <button class="action-btn"
+              data-name="{{ msg.name | e }}"
+              data-email="{{ msg.email | e }}"
+              data-subject="{{ msg.subject | e }}"
+              data-body="{{ msg.message | e }}"
+              onclick="showMsg(this)">View</button>
+            {% if not msg.is_read %}
+            <form method="POST" action="{{ url_for('admin.mark_read', msg_id=msg.id) }}" style="display:inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="action-btn success" type="submit">Mark Read</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:var(--slate-light)">No contact messages yet.</div>
+  {% endif %}
+</div>
+<div id="msgModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:white;border-radius:20px;padding:2.5rem;max-width:520px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h3 id="msgTitle" style="font-size:1.3rem;color:var(--slate)"></h3>
+      <button onclick="document.getElementById('msgModal').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer">×</button>
+    </div>
+    <div id="msgFrom" style="font-size:13px;color:var(--slate-light);margin-bottom:1rem"></div>
+    <div id="msgBody" style="font-size:14px;line-height:1.7;background:var(--cream);border-radius:12px;padding:1rem;white-space:pre-wrap"></div>
+    <a id="msgReply" class="btn btn-primary btn-sm" style="margin-top:1.5rem;display:inline-flex" href="#">Reply via Email</a>
+  </div>
+</div>
+<script>
+function showMsg(btn) {
+  document.getElementById('msgTitle').textContent = btn.getAttribute('data-subject');
+  document.getElementById('msgFrom').textContent  = 'From: ' + btn.getAttribute('data-name') + ' <' + btn.getAttribute('data-email') + '>';
+  document.getElementById('msgBody').textContent  = btn.getAttribute('data-body');
+  document.getElementById('msgReply').href = 'mailto:' + btn.getAttribute('data-email') + '?subject=Re: ' + btn.getAttribute('data-subject');
+  document.getElementById('msgModal').style.display = 'flex';
+}
+</script>
+{% endblock %}

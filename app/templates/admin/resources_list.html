@@ -1,0 +1,35 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Resources — Admin PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Resources</h1><p>Manage the resource library.</p></div>
+  <a class="btn btn-primary btn-sm" href="{{ url_for('admin.resource_create') }}">+ Add Resource</a>
+</div>
+<div class="admin-card">
+  {% if resources %}
+  <table class="data-table">
+    <thead><tr><th>Title</th><th>Category</th><th>Type</th><th>Language</th><th>Downloads</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for r in resources %}
+      <tr>
+        <td><strong>{{ r.title | truncate(50) }}</strong></td>
+        <td><span style="font-size:12px;color:var(--teal);font-weight:600">{{ r.category }}</span></td>
+        <td>{{ r.resource_type }}</td>
+        <td>{{ r.language }}</td>
+        <td>{{ r.download_count }}</td>
+        <td><span class="status-badge {{ 'status-approved' if r.is_published else 'status-pending' }}">{{ 'Published' if r.is_published else 'Hidden' }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.resource_delete', res_id=r.id) }}" style="display:inline" onsubmit="return confirm('Delete this resource?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="action-btn danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:var(--slate-light)">No resources yet. <a href="{{ url_for('admin.resource_create') }}" style="color:var(--teal)">Add the first resource →</a></div>
+  {% endif %}
+</div>
+{% endblock %}

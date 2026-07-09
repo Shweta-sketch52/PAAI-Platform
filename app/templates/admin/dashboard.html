@@ -1,0 +1,111 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Admin Dashboard — PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Admin Dashboard</h1><p>Welcome back. Here's a real-time overview of the PAAI platform.</p></div>
+  <div style="font-size:13px;color:var(--slate-light)">{{ now.strftime('%A, %B %d, %Y') if now is defined else '' }}</div>
+</div>
+
+<div class="admin-stat-cards">
+  {% for icon_bg,icon_svg,icon_color,label,val,val_color in [
+    ('#e0f4f0','<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>','var(--teal)','Total Members',stats.total_users,'var(--slate)'),
+    ('#fef3c7','<path d="M9 12l2 2 4-4"/>','#d97706','Pending Reviews',stats.pending_memberships,'#d97706'),
+    ('#fce7f3','<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>','#ec4899','New Messages',stats.new_messages,'#ec4899'),
+    ('#e8f4fd','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','#2980b9','News Posts',stats.total_news,'var(--slate)')
+  ] %}
+  <div class="admin-stat-card">
+    <div class="asc-icon" style="background:{{ icon_bg }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ icon_color }}" stroke-width="2">{{ icon_svg | safe }}</svg></div>
+    <div><div class="asc-label">{{ label }}</div><div class="asc-num" style="color:{{ val_color }}">{{ val }}</div></div>
+  </div>
+  {% endfor %}
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <div class="admin-card-title">Quick Stats</div>
+    </div>
+    {% for label,val,color in [
+      ('Total Events',stats.total_events,'var(--teal)'),
+      ('Total Resources',stats.total_resources,'#2980b9'),
+      ('Active FAQs',stats.total_faqs,'var(--gold)'),
+      ('Pending Memberships',stats.pending_memberships,'#d97706')
+    ] %}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:14px;color:var(--slate-light)">{{ label }}</span>
+      <span style="font-size:1.1rem;font-family:'Fraunces',serif;font-weight:600;color:{{ color }}">{{ val }}</span>
+    </div>
+    {% endfor %}
+    <div style="margin-top:1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.news_create') }}">+ Add News</a>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.event_create') }}">+ Add Event</a>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.resource_create') }}">+ Add Resource</a>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.faq_create') }}">+ Add FAQ</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <div class="admin-card-title">Recent Contact Messages</div>
+      <a class="action-btn" href="{{ url_for('admin.messages') }}">View All</a>
+    </div>
+    {% if messages %}
+      {% for msg in messages[:4] %}
+      <div style="display:flex;justify-content:space-between;align-items:start;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--slate)">{{ msg.name }} {% if not msg.is_read %}<span style="width:6px;height:6px;background:var(--teal);border-radius:50%;display:inline-block;vertical-align:middle;margin-left:4px"></span>{% endif %}</div>
+          <div style="font-size:12px;color:var(--slate-light)">{{ msg.subject }} · {{ msg.created_at.strftime('%b %d') }}</div>
+        </div>
+        <form method="POST" action="{{ url_for('admin.mark_read', msg_id=msg.id) }}" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="action-btn" type="submit">Mark Read</button>
+        </form>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="text-align:center;padding:2rem;color:var(--slate-light);font-size:14px">No new messages 🎉</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="admin-card">
+  <div class="admin-card-header">
+    <div class="admin-card-title">Pending Membership Applications</div>
+    <a class="action-btn" href="{{ url_for('admin.memberships') }}">View All</a>
+  </div>
+  {% if pending_apps %}
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>Applicant</th><th>Type</th><th>Organization</th><th>Location</th><th>Applied</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for app in pending_apps %}
+        <tr>
+          <td><strong>{{ app.full_name }}</strong><br><span style="font-size:12px;color:var(--slate-light)">{{ app.email }}</span></td>
+          <td><span class="status-badge" style="background:var(--teal-pale);color:var(--teal-dark)">{{ app.membership_type }}</span></td>
+          <td>{{ app.organization or '—' }}</td>
+          <td>{{ app.city or '' }}{% if app.state %}, {{ app.state }}{% endif %}</td>
+          <td>{{ app.submitted_at.strftime('%b %d, %Y') }}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <form method="POST" action="{{ url_for('admin.review_membership', app_id=app.id) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="approve">
+                <button class="action-btn success" type="submit">✓ Approve</button>
+              </form>
+              <form method="POST" action="{{ url_for('admin.review_membership', app_id=app.id) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="reject">
+                <button class="action-btn danger" type="submit">✕ Reject</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:2rem;color:var(--slate-light);font-size:14px">No pending applications 🎉</div>
+  {% endif %}
+</div>
+{% endblock %}

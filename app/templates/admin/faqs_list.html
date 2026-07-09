@@ -1,0 +1,33 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Chatbot FAQs — Admin PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Chatbot FAQs</h1><p>Manage the knowledge base for the AI chatbot.</p></div>
+  <a class="btn btn-primary btn-sm" href="{{ url_for('admin.faq_create') }}">+ Add FAQ</a>
+</div>
+<div class="admin-card">
+  {% if faqs %}
+  <table class="data-table">
+    <thead><tr><th>Question</th><th>Category</th><th>Keywords</th><th>Active</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for faq in faqs %}
+      <tr>
+        <td style="max-width:300px"><strong>{{ faq.question | truncate(80) }}</strong></td>
+        <td><span style="font-size:12px;color:var(--teal);font-weight:600">{{ faq.category }}</span></td>
+        <td style="font-size:12px;color:var(--slate-light)">{{ faq.keywords or '—' }}</td>
+        <td><span class="status-badge {{ 'status-approved' if faq.is_active else 'status-rejected' }}">{{ 'Yes' if faq.is_active else 'No' }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.faq_delete', faq_id=faq.id) }}" style="display:inline" onsubmit="return confirm('Delete this FAQ?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="action-btn danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:var(--slate-light)">No FAQs yet. <a href="{{ url_for('admin.faq_create') }}" style="color:var(--teal)">Add the first FAQ →</a></div>
+  {% endif %}
+</div>
+{% endblock %}

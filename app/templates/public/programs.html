@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Programs & Initiatives — PAAI{% endblock %}
+{% block content %}
+<style>
+.page-hero{padding:140px 2rem 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,#04302a,var(--teal-dark))}
+.page-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1800&q=80')center/cover;opacity:.1}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(4,48,42,.93),rgba(13,124,106,.85))}
+.page-hero-content{position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center}
+.page-hero-content h1{font-size:3.5rem;color:white;font-weight:400;margin-bottom:1rem}
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.prog-card-new{background:white;border-radius:20px;overflow:hidden;border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.prog-card-new:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(13,124,106,.12)}
+.prog-card-new img{width:100%;height:220px;object-fit:cover}
+.prog-card-new .body{padding:2rem}
+@media(max-width:900px){.prog-grid{grid-template-columns:1fr}}
+</style>
+<div class="page-hero">
+  <div class="page-hero-bg"></div><div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">Programs & Initiatives</span>
+    <h1>Programs Built Around <em style="font-style:italic;color:#f0c96e">People</em></h1>
+    <p style = color:rgba(255,255,255,.9)>Every PAAI initiative is co-designed with the communities it serves — ensuring relevance, dignity, and lasting impact.</p>
+  </div>
+</div>
+<section class="section">
+  <div class="container">
+    <div class="prog-grid">
+      {% for img,label,title,desc,link,link_text in [
+        ('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&q=80','Flagship Program','National Patient Support Network','Connecting patients across 28 states through regional support hubs, online communities, and peer counseling programs. Over 600 active support groups nationwide.','membership','Join Network'),
+        ('https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&q=80','Policy Initiative','Healthcare Policy Reform Task Force','Working directly with Ministry of Health officials and parliamentary committees to advocate for patient rights legislation and insurance reform.','membership','Get Involved'),
+        ('https://images.unsplash.com/photo-1599045118108-bf9954418b76?w=700&q=80','Awareness','Health Literacy & Awareness Campaigns','Annual campaigns on rare diseases, mental health, cancer screening, and preventive care reaching millions of Indians through digital and physical outreach.','news','View Campaigns'),
+        ('https://media.istockphoto.com/id/1178548547/photo/female-nurse-and-family-with-senior-patient-at-home.webp?a=1&b=1&s=612x612&w=0&k=20&c=YrhuXBtBAOuvDD2mXjlptBYLw_NL9KXvIomxHRxi6ts=','Education','Caregiver Skills & Wellness Program','Certified training workshops for family caregivers covering medical management, emotional wellbeing, financial planning, and legal rights — in 10 Indian languages.','resources','Access Resources')
+      ] %}
+      <div class="prog-card-new">
+        <img src="{{ img }}" alt="{{ title }}" loading="lazy">
+        <div class="body">
+          <span class="section-label">{{ label }}</span>
+          <h3 style="font-size:1.4rem;color:var(--slate);margin-bottom:.75rem">{{ title }}</h3>
+          <p style="font-size:14px;color:var(--slate-light);line-height:1.7;margin-bottom:1rem">{{ desc }}</p>
+          <a class="btn btn-primary btn-sm" href="{{ url_for('public.' + link) }}">{{ link_text }}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

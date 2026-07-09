@@ -1,0 +1,35 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Events — Admin PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Events</h1><p>Manage all PAAI events and workshops.</p></div>
+  <a class="btn btn-primary btn-sm" href="{{ url_for('admin.event_create') }}">+ New Event</a>
+</div>
+<div class="admin-card">
+  {% if events %}
+  <table class="data-table">
+    <thead><tr><th>Title</th><th>Type</th><th>Location</th><th>Date</th><th>Registrations</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for ev in events %}
+      <tr>
+        <td><strong>{{ ev.title | truncate(50) }}</strong></td>
+        <td><span style="font-size:12px;color:var(--teal);font-weight:600">{{ ev.event_type }}</span></td>
+        <td>{{ ev.location or 'TBA' }}</td>
+        <td>{{ ev.event_date.strftime('%b %d, %Y %I:%M %p') }}</td>
+        <td>{{ ev.registered_count }}{% if ev.capacity %}/{{ ev.capacity }}{% endif %}</td>
+        <td><span class="status-badge {{ 'status-approved' if ev.is_published else 'status-pending' }}">{{ 'Published' if ev.is_published else 'Draft' }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.event_delete', ev_id=ev.id) }}" style="display:inline" onsubmit="return confirm('Delete this event?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="action-btn danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:var(--slate-light)">No events yet. <a href="{{ url_for('admin.event_create') }}" style="color:var(--teal)">Create the first event →</a></div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;padding-top:70px}
+.admin-sidebar{background:var(--slate);padding:2rem 1.2rem;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto}
+.admin-sidebar .sidebar-user{display:flex;align-items:center;gap:12px;padding:1rem 1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:1.5rem}
+.admin-sidebar .u-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;color:var(--slate);font-weight:700;font-size:16px;flex-shrink:0}
+.admin-sidebar .u-name{font-size:14px;font-weight:600;color:rgba(255,255,255,.9)}
+.admin-sidebar .u-role{font-size:12px;color:var(--teal-light)}
+.admin-sidebar .sec-label{font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;padding:0 12px;margin:1.2rem 0 8px}
+.admin-sidebar .nav-list{list-style:none}
+.admin-sidebar .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.55);font-size:14px;font-weight:500;transition:all .15s;margin-bottom:4px;text-decoration:none}
+.admin-sidebar .nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.admin-sidebar .nav-item.active{background:rgba(13,124,106,.3);color:var(--teal-light)}
+.admin-sidebar .nav-item svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2}
+.admin-sidebar .nav-item .badge{background:rgba(13,124,106,.4);color:var(--teal-light);border-radius:100px;font-size:10px;padding:2px 7px;margin-left:auto}
+.admin-sidebar .nav-item .badge-warn{background:rgba(212,168,83,.3);color:var(--gold-light)}
+.admin-sidebar .nav-item .badge-danger{background:rgba(239,68,68,.3);color:#f87171}
+.admin-sidebar .nav-item.danger{color:rgba(239,100,80,.7)}
+.admin-sidebar .nav-item.danger:hover{background:rgba(192,57,43,.15);color:#f87171}
+.admin-main{background:#f0f3f8;padding:2.5rem;overflow-y:auto}
+.admin-header{margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between}
+.admin-header h1{font-size:1.6rem;color:var(--slate);font-weight:400}
+.admin-header p{font-size:14px;color:var(--slate-light);margin-top:4px}
+.admin-stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+.admin-stat-card{background:white;border-radius:14px;padding:1.5rem;border:1px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:1rem}
+.asc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.asc-label{font-size:12px;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em}
+.asc-num{font-family:'Fraunces',serif;font-size:1.8rem;color:var(--slate);font-weight:600;margin-top:2px}
+.admin-card{background:white;border-radius:16px;padding:1.5rem 2rem;border:1px solid rgba(0,0,0,.06);margin-bottom:1.5rem}
+.admin-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.admin-card-title{font-size:1rem;font-weight:600;color:var(--slate)}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;font-size:12px;font-weight:600;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--cream)}
+.data-table td{padding:14px 16px;font-size:14px;color:var(--text-body);border-bottom:1px solid var(--border)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#f8fffe}
+.action-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:white;color:var(--text-body);transition:all .15s;text-decoration:none;font-family:'DM Sans',sans-serif}
+.action-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-pale)}
+.action-btn.danger:hover{border-color:#f87171;color:#dc2626;background:#fef2f2}
+.action-btn.success{border-color:var(--teal);color:var(--teal);background:var(--teal-pale)}
+@media(max-width:900px){.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-stat-cards{grid-template-columns:1fr 1fr}}
+</style>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-user">
+      <div class="u-avatar">{{ current_user.get_initials() }}</div>
+      <div>
+        <div class="u-name">{{ current_user.full_name }}</div>
+        <div class="u-role">Super Administrator</div>
+      </div>
+    </div>
+    <div class="sec-label">Overview</div>
+    <ul class="nav-list">
+      <li><a class="nav-item {{ 'active' if request.endpoint == 'admin.dashboard' }}" href="{{ url_for('admin.dashboard') }}"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+    </ul>
+    <div class="sec-label">Management</div>
+    <ul class="nav-list">
+      <li><a class="nav-item {{ 'active' if 'users' in request.endpoint }}" href="{{ url_for('admin.users') }}"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</a></li>
+      <li><a class="nav-item {{ 'active' if 'membership' in request.endpoint }}" href="{{ url_for('admin.memberships') }}"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138"/></svg>Memberships</a></li>
+      <li><a class="nav-item {{ 'active' if 'messages' in request.endpoint }}" href="{{ url_for('admin.messages') }}"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Messages</a></li>
+    </ul>
+    <div class="sec-label">Content</div>
+    <ul class="nav-list">
+      <li><a class="nav-item {{ 'active' if 'news' in request.endpoint }}" href="{{ url_for('admin.news_list') }}"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>News Posts</a></li>
+      <li><a class="nav-item {{ 'active' if 'event' in request.endpoint }}" href="{{ url_for('admin.events_list') }}"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a></li>
+      <li><a class="nav-item {{ 'active' if 'resource' in request.endpoint }}" href="{{ url_for('admin.resources_list') }}"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Resources</a></li>
+      <li><a class="nav-item {{ 'active' if 'faq' in request.endpoint }}" href="{{ url_for('admin.faqs_list') }}"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chatbot FAQs</a></li>
+    </ul>
+    <div class="sec-label">System</div>
+    <ul class="nav-list">
+      <li><a class="nav-item" href="{{ url_for('public.home') }}"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>View Site</a></li>
+      <li><a class="nav-item danger" href="{{ url_for('auth.logout') }}"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a></li>
+    </ul>
+  </aside>
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}

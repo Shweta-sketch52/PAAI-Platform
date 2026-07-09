@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — PAAI{% endblock %}
+{% block content %}
+<div style="padding-top:70px;min-height:60vh">
+  <div style="background:linear-gradient(135deg,#0a2818,var(--teal-dark));padding:3rem 2rem;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;{% if post.cover_image %}background:url('/static/uploads/{{ post.cover_image }}')center/cover;opacity:.15;{% endif %}"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,40,24,.95),rgba(13,124,106,.85))"></div>
+    <div style="position:relative;z-index:2;max-width:800px;margin:0 auto;text-align:center">
+      <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">{{ post.category }}</span>
+      <h1 style="font-size:clamp(1.8rem,3.5vw,3rem);color:white;font-weight:400;margin:1rem 0">{{ post.title }}</h1>
+      <p style="color:rgba(255,255,255,.7);font-size:14px">Published {{ post.published_at.strftime('%B %d, %Y') if post.published_at else '' }}{% if post.author %} · By {{ post.author.full_name }}{% endif %}</p>
+    </div>
+  </div>
+  <div style="max-width:800px;margin:3rem auto;padding:0 2rem">
+    <div style="background:white;border-radius:20px;padding:3rem;border:1px solid var(--border);line-height:1.8;font-size:15px;color:#374151">
+      {{ post.content | safe }}
+    </div>
+    <div style="margin-top:2rem;display:flex;justify-content:space-between;align-items:center">
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('public.news') }}">← Back to News</a>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('public.membership') }}">Join PAAI</a>
+    </div>
+    {% if related %}
+    <div style="margin-top:3rem">
+      <h3 style="font-size:1.2rem;color:var(--slate);margin-bottom:1rem">Related Articles</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+        {% for r in related %}
+        <a href="{{ url_for('public.news_detail', slug=r.slug) }}" style="text-decoration:none;background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border);display:block">
+          <div style="padding:1rem"><div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;margin-bottom:.25rem">{{ r.category }}</div><div style="font-size:14px;font-weight:600;color:var(--slate)">{{ r.title | truncate(60) }}</div></div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

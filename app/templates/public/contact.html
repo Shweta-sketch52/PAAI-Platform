@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — PAAI{% endblock %}
+{% block content %}
+<style>
+.page-hero{padding:130px 2rem 60px;position:relative;overflow:hidden;background:linear-gradient(135deg,#04302a,var(--teal-dark))}
+.page-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1800&q=80')center/cover;opacity:.1}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(4,48,42,.93),rgba(13,124,106,.85))}
+.page-hero-content{position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center}
+.page-hero-content h1{font-size:3.5rem;color:white;font-weight:400;margin-bottom:1rem}
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:3rem}
+.ci-card{background:white;border-radius:20px;padding:2.5rem;border:1px solid var(--border);height:fit-content}
+.ci-item{display:flex;gap:14px;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.ci-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.ci-icon{width:44px;height:44px;background:var(--teal-pale);border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ci-label{font-size:12px;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:500}
+.ci-val{font-size:15px;color:var(--slate);font-weight:500}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
+</style>
+<div class="page-hero">
+  <div class="page-hero-bg"></div><div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">Contact Us</span>
+    <h1>We're Here to <em style="font-style:italic;color:#f0c96e">Listen</em></h1>
+    <p style = color:rgba(255,255,255,.9)>Whether you're a patient, caregiver, NGO, or healthcare organization — reach out and let's build something meaningful together.</p>
+  </div>
+</div>
+<section class="section" style="background:var(--cream)">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="ci-card">
+        <h3 style="font-size:1.3rem;color:var(--slate);margin-bottom:1.5rem">Get in Touch</h3>
+        {% for icon_svg,label,val in [
+          ('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>','Address','C-14, Institutional Area, Lodhi Road, New Delhi — 110 003'),
+          ('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.46a2 2 0 0 1 2-2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>','Phone','+91 11 2345 6789'),
+          ('<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>','Email','info@paai.org.in'),
+          ('<circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>','Office Hours','Monday–Friday, 9:00 AM – 6:00 PM IST')
+        ] %}
+        <div class="ci-item">
+          <div class="ci-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">{{ icon_svg | safe }}</svg></div>
+          <div><div class="ci-label">{{ label }}</div><div class="ci-val">{{ val }}</div></div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div style="background:white;border-radius:20px;padding:3rem;border:1px solid var(--border);box-shadow:0 10px 40px rgba(13,124,106,.08)">
+        <h2 style="font-size:1.8rem;color:var(--slate);margin-bottom:.5rem">Send a Message</h2>
+        <p style="font-size:14px;color:var(--slate-light);margin-bottom:2rem">We typically respond within 1–2 business days.</p>
+        <form method="POST" action="{{ url_for('public.contact') }}">
+          {{ form.hidden_tag() }}
+          <div class="form-row">
+            <div class="form-group">
+              {{ form.name.label(class='form-label') }}
+              {{ form.name(class='form-control', placeholder='Your full name') }}
+              {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="form-group">
+              {{ form.email.label(class='form-label') }}
+              {{ form.email(class='form-control', placeholder='your@email.com') }}
+              {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ form.subject.label(class='form-label') }}
+            {{ form.subject(class='form-control') }}
+          </div>
+          <div class="form-group">
+            {{ form.message.label(class='form-label') }}
+            {{ form.message(class='form-control', style='min-height:160px', placeholder='How can we help you?') }}
+            {% for e in form.message.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+          <button class="btn btn-primary" type="submit">Send Message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

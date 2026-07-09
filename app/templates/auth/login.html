@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Sign In — PAAI{% endblock %}
+{% block content %}
+<style>
+.auth-page{min-height:100vh;background:linear-gradient(135deg,var(--cream),#e8f7f4);display:flex;align-items:center;justify-content:center;padding:100px 2rem 2rem}
+.auth-card{background:white;border-radius:24px;padding:3rem;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(13,124,106,.12);border:1px solid var(--border)}
+.auth-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:2rem}
+.auth-title{font-size:1.8rem;color:var(--slate);text-align:center;margin-bottom:.5rem}
+.auth-sub{font-size:14px;color:var(--slate-light);text-align:center;margin-bottom:2rem}
+.divider{display:flex;align-items:center;gap:12px;margin:1.5rem 0;font-size:12px;color:var(--slate-light)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-switch{text-align:center;font-size:14px;color:var(--slate-light);margin-top:1.5rem}
+.auth-switch a{color:var(--teal);font-weight:500;text-decoration:none}
+</style>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg></div>
+      <span style="font-family:'Fraunces',serif;font-size:20px;color:var(--slate);font-weight:600">PAAI</span>
+    </div>
+    <h2 class="auth-title">Welcome Back</h2>
+    <p class="auth-sub">Sign in to your PAAI member account</p>
+    <form method="POST" action="{{ url_for('auth.login') }}">
+      {{ form.hidden_tag() }}
+      <div class="form-group">{{ form.email.label(class='form-label') }}{{ form.email(class='form-control',placeholder='you@example.com') }}{% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <div class="form-group">{{ form.password.label(class='form-label') }}{{ form.password(class='form-control',placeholder='Your password') }}{% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">{{ form.remember(style='accent-color:var(--teal)') }} Remember me</label>
+        <a href="#" style="font-size:13px;color:var(--teal)">Forgot password?</a>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Sign In to PAAI</button>
+    </form>
+    <div class="divider"><span>or</span></div>
+    <a class="btn btn-secondary" style="width:100%;justify-content:center" href="{{ url_for('auth.admin_login') }}">Admin Login</a>
+    <p class="auth-switch">Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+  </div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block chatbot %}{% endblock %}

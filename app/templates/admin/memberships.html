@@ -1,0 +1,53 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Memberships — Admin PAAI{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div><h1>Membership Applications</h1><p>Review and manage membership requests.</p></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:1.5rem">
+  {% for s in ['pending','approved','rejected'] %}
+  <a class="action-btn {{ 'success' if active_status == s }}" href="{{ url_for('admin.memberships', status=s) }}">{{ s.title() }}</a>
+  {% endfor %}
+</div>
+<div class="admin-card">
+  {% if applications %}
+  <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>Applicant</th><th>Type</th><th>Organization</th><th>Location</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for app in applications %}
+        <tr>
+          <td><strong>{{ app.full_name }}</strong><br><span style="font-size:12px;color:var(--slate-light)">{{ app.email }}</span></td>
+          <td><span style="font-size:12px;color:var(--teal);font-weight:600">{{ app.membership_type }}</span></td>
+          <td>{{ app.organization or '—' }}</td>
+          <td>{{ app.city or '—' }}{% if app.state %}, {{ app.state }}{% endif %}</td>
+          <td>{{ app.submitted_at.strftime('%b %d, %Y') }}</td>
+          <td><span class="status-badge status-{{ app.status }}">{{ app.status.title() }}</span></td>
+          <td>
+            {% if app.status == 'pending' %}
+            <div style="display:flex;gap:6px">
+              <form method="POST" action="{{ url_for('admin.review_membership', app_id=app.id) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="approve">
+                <button class="action-btn success" type="submit">✓ Approve</button>
+              </form>
+              <form method="POST" action="{{ url_for('admin.review_membership', app_id=app.id) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="reject">
+                <button class="action-btn danger" type="submit">✕ Reject</button>
+              </form>
+            </div>
+            {% else %}
+            <span style="font-size:12px;color:var(--slate-light)">Reviewed {{ app.reviewed_at.strftime('%b %d') if app.reviewed_at else '' }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:var(--slate-light)">No {{ active_status }} applications found.</div>
+  {% endif %}
+</div>
+{% endblock %}

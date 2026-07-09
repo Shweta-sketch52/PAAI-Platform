@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+{% block title %}PAAI — Patient Advocacy Alliance India{% endblock %}
+
+{% block content %}
+<style>
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:70px;background:linear-gradient(135deg,#0a4f42,#0d7c6a 40%,#1a9d87 70%,#0f8c76)}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1800&q=80')center/cover no-repeat;opacity:.15}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,90,77,.92),rgba(13,124,106,.85),rgba(20,168,142,.75))}
+.hero-pattern{position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(255,255,255,.04) 1px,transparent 1px),radial-gradient(circle at 80% 20%,rgba(255,255,255,.04) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:6px 16px;margin-bottom:1.5rem;color:rgba(255,255,255,.9);font-size:13px;font-weight:500}
+.pulse{width:6px;height:6px;background:var(--gold-light,#f0c96e);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+.hero h1{font-size:clamp(2.4rem,4.5vw,4rem);color:white;line-height:1.15;font-weight:400;margin-bottom:1.5rem}
+.hero h1 em{font-style:italic;color:#f0c96e}
+.hero p{color:rgba(255,255,255,.82);font-size:17px;line-height:1.75;max-width:500px;margin-bottom:2rem}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:2rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.15)}
+.hero-stat .num{font-family:'Fraunces',serif;font-size:2rem;color:white;font-weight:600;line-height:1}
+.hero-stat .lbl{color:rgba(255,255,255,.65);font-size:12px;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.hero-visual{position:relative}
+.hero-img-main{border-radius:20px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.3);aspect-ratio:4/3}
+.hero-img-main img{width:100%;height:100%;object-fit:cover}
+.hero-float{position:absolute;background:white;border-radius:14px;padding:14px 18px;box-shadow:0 15px 40px rgba(0,0,0,.15)}
+.hero-float.c1{bottom:-20px;left:-30px}
+.hero-float.c2{top:-20px;right:-20px}
+.fc-label{font-size:11px;color:var(--slate-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.fc-val{font-family:'Fraunces',serif;font-size:1.3rem;color:var(--slate);font-weight:600}
+.fc-sub{font-size:12px;color:var(--teal);font-weight:500}
+
+/* PARTNERS */
+.partners-strip{background:white;padding:3rem 2rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.partners-label{text-align:center;font-size:12px;color:var(--slate-light);font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem}
+.partners-logos{display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap}
+.partner-text{font-size:15px;color:var(--slate-light);font-weight:600;opacity:.45;transition:opacity .2s;font-family:'Fraunces',serif}
+.partner-text:hover{opacity:.85;color:var(--teal)}
+
+/* IMPACT */
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.impact-card{background:white;border-radius:16px;padding:2rem;border:1px solid var(--border);text-align:center;transition:transform .2s,box-shadow .2s}
+.impact-card:hover{transform:translateY(-4px);box-shadow:0 12px 35px rgba(13,124,106,.10)}
+.ic-icon{width:56px;height:56px;border-radius:14px;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center}
+.ic-num{font-family:'Fraunces',serif;font-size:2.5rem;color:var(--slate);font-weight:600}
+.ic-label{font-size:14px;color:var(--slate-light);margin-top:6px;line-height:1.4}
+
+/* WHY */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.why-img{border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(13,124,106,.15)}
+.why-img img{width:100%;height:420px;object-fit:cover}
+.why-badge-abs{position:absolute;bottom:-20px;right:-20px;background:var(--teal);color:white;border-radius:14px;padding:20px 24px;box-shadow:0 10px 30px rgba(13,124,106,.3);text-align:center}
+.wb-num{font-family:'Fraunces',serif;font-size:2rem;font-weight:600;line-height:1}
+.wb-txt{font-size:12px;opacity:.85;margin-top:4px}
+.why-points{list-style:none;margin-top:1.5rem}
+.why-points li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.why-points li:last-child{border-bottom:none}
+.wp-icon{width:36px;height:36px;background:var(--teal-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wp-icon svg{width:18px;height:18px;stroke:var(--teal);fill:none;stroke-width:2}
+.wp-text strong{display:block;font-size:15px;color:var(--slate);margin-bottom:2px;font-weight:500}
+.wp-text span{font-size:13px;color:var(--slate-light);line-height:1.5}
+
+/* PROGRAMS */
+.prog-bg{background:var(--slate)}
+.prog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.prog-card{border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;cursor:pointer;transition:transform .3s}
+.prog-card:hover{transform:scale(1.02)}
+.prog-card img{width:100%;height:100%;object-fit:cover}
+.prog-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,40,35,.92) 0%,rgba(10,40,35,.4) 50%,transparent)}
+.prog-content{position:absolute;bottom:0;left:0;right:0;padding:2rem 1.5rem}
+.prog-tag{display:inline-block;background:var(--gold);color:var(--slate);border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;margin-bottom:.75rem}
+.prog-card h3{font-size:1.3rem;color:white;font-weight:400;margin-bottom:.5rem}
+.prog-card p{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5}
+.prog-learn{font-size:13px;color:#14a88e;font-weight:500;margin-top:.75rem;display:inline-flex;align-items:center;gap:4px}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.test-card{background:white;border-radius:18px;padding:2rem;border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.test-card:hover{transform:translateY(-4px);box-shadow:0 12px 35px rgba(13,124,106,.10)}
+.test-quote{font-size:2.5rem;color:var(--teal-light);line-height:1;margin-bottom:1rem;font-family:'Fraunces',serif}
+.test-text{font-size:15px;color:#374151;line-height:1.75;font-style:italic;margin-bottom:1.5rem}
+.test-author{display:flex;align-items:center;gap:12px}
+.test-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--teal-pale)}
+.test-name{font-size:14px;font-weight:600;color:var(--slate)}
+.test-role{font-size:12px;color:var(--slate-light)}
+
+/* NEWSLETTER */
+.newsletter{background:linear-gradient(135deg,var(--teal-dark),var(--teal))}
+.newsletter-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.newsletter h2{font-size:2.2rem;font-weight:400;color:white;margin-bottom:.75rem}
+.newsletter p{color:rgba(255,255,255,.8);font-size:16px;line-height:1.6}
+.nl-form{display:flex;gap:10px}
+.nl-input{flex:1;padding:14px 18px;border-radius:10px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:white;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.nl-input::placeholder{color:rgba(255,255,255,.55)}
+.nl-input:focus{border-color:rgba(255,255,255,.6)}
+
+@media(max-width:900px){
+  .hero-content,.why-grid,.newsletter-inner{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .impact-grid,.prog-grid,.test-grid{grid-template-columns:1fr}
+}
+</style>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge"><span class="pulse"></span>India's Premier Patient Advocacy Platform</div>
+      <h1>Every Patient Deserves a <em>Powerful</em> Voice</h1>
+      <p>PAAI unites healthcare advocates, patient communities, NGOs, and caregivers across India to drive meaningful change in healthcare accessibility, policy, and support.</p>
+      <div class="hero-actions">
+        <a class="btn btn-white btn-lg" href="{{ url_for('public.membership') }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Join the Alliance
+        </a>
+        <a class="btn btn-lg" style="border:1.5px solid rgba(255,255,255,.5);color:white;background:transparent" href="{{ url_for('public.about') }}">Learn Our Mission</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num" data-count="2400">0+</div><div class="lbl">Members</div></div>
+        <div class="hero-stat"><div class="num" data-count="180">0+</div><div class="lbl">Partner NGOs</div></div>
+        <div class="hero-stat"><div class="num" data-count="28">0+</div><div class="lbl">States</div></div>
+        <div class="hero-stat"><div class="num" data-count="95000">0+</div><div class="lbl">Patients Reached</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div style="position:relative">
+        <div class="hero-img-main">
+          <img src="{{ url_for('static', filename='images/community.jpg') }}" alt="PAAI Community Support Group" loading="lazy">
+        </div>
+        <div class="hero-float c1">
+          <div class="fc-label">Membership Status</div>
+          <div class="fc-val">Active ✓</div>
+          <div class="fc-sub">2,400+ advocates</div>
+        </div>
+        <div class="hero-float c2">
+          <div class="fc-label">Impact This Year</div>
+          <div class="fc-val">95,000+</div>
+          <div class="fc-sub">patients supported</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<div class="partners-strip">
+  <p class="partners-label">Trusted by leading healthcare organizations across India</p>
+  <div class="partners-logos">
+    <span class="partner-text">Indian Medical Association</span>
+    <span class="partner-text">NABH</span>
+    <span class="partner-text">CII Health</span>
+    <span class="partner-text">FICCI Health</span>
+    <span class="partner-text">WHO India</span>
+    <span class="partner-text">UNICEF India</span>
+    <span class="partner-text">Apollo Foundation</span>
+  </div>
+</div>
+
+<!-- IMPACT -->
+<section class="section" style="background:var(--cream)">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Our Impact</span>
+      <h2 class="section-title">Measuring What Matters Most</h2>
+      <p class="section-subtitle">Every number represents a life touched, a voice amplified, and a barrier removed in India's healthcare system.</p>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="ic-icon" style="background:#e0f4f0"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <div class="ic-num">2,400+</div><div class="ic-label">Active Members & Advocates</div>
+      </div>
+      <div class="impact-card">
+        <div class="ic-icon" style="background:#fef9e7"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+        <div class="ic-num">180+</div><div class="ic-label">Partner NGOs & Foundations</div>
+      </div>
+      <div class="impact-card">
+        <div class="ic-icon" style="background:#e8f4fd"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2980b9" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="ic-num">28</div><div class="ic-label">States & Union Territories</div>
+      </div>
+      <div class="impact-card">
+        <div class="ic-icon" style="background:#fde8f4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="ic-num">95,000+</div><div class="ic-label">Patients Reached & Supported</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY IT MATTERS -->
+<section class="section">
+  <div class="container">
+    <div class="why-grid">
+      <div style="position:relative">
+        <div class="why-img"><img src="{{ url_for('static', filename='images/Adovacy.jpg') }}" alt="PAAI Community Support Group" loading="lazy"></div>
+        <div class="why-badge-abs"><div class="wb-num">12+</div><div class="wb-txt">Years of advocacy</div></div>
+      </div>
+      <div>
+        <span class="section-label">Why This Matters</span>
+        <h2 class="section-title">Healthcare Equity is Not a <em style="font-style:italic;color:var(--teal)">Privilege</em></h2>
+        <p style="color:var(--slate-light);font-size:15px;line-height:1.75;margin-bottom:1.5rem">Millions of Indians face healthcare systems that are complex, fragmented, and often inaccessible. PAAI bridges the gap between patients, caregivers, and the institutions that serve them.</p>
+        <ul class="why-points">
+          <li>
+            <div class="wp-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div class="wp-text"><strong>Amplify Patient Voices</strong><span>Ensuring patient experiences shape healthcare policy at every level of governance.</span></div>
+          </li>
+          <li>
+            <div class="wp-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+            <div class="wp-text"><strong>Caregiver Support Networks</strong><span>Dedicated programs for families navigating complex healthcare journeys.</span></div>
+          </li>
+          <li>
+            <div class="wp-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="wp-text"><strong>Community Collaboration</strong><span>180+ NGOs working together on shared goals for better patient outcomes.</span></div>
+          </li>
+          <li>
+            <div class="wp-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="wp-text"><strong>Policy Advocacy</strong><span>Representing patient interests in national healthcare reform discussions.</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="section prog-bg">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label" style="background:rgba(255,255,255,.1);color:#f0c96e">Our Initiatives</span>
+      <h2 class="section-title" style="color:white">Programs That <em style="font-style:italic;color:#f0c96e">Transform Lives</em></h2>
+      <p class="section-subtitle" style="color:rgba(255,255,255,.65)">From grassroots community support to national policy advocacy.</p>
+    </div>
+    <div class="prog-grid">
+      {% for prog in [
+        ('/static/images/Program1.jpg','Community','Patient Support Networks','Regional support groups connecting patients across 28 states through peer counseling and resource sharing.'),
+        ('/static/images/Program2.jpg','Policy','Healthcare Policy Reform','Working with government bodies to strengthen patient rights and improve regulatory frameworks.'),
+        ('https://media.istockphoto.com/id/1178548547/photo/female-nurse-and-family-with-senior-patient-at-home.webp?a=1&b=1&s=612x612&w=0&k=20&c=YrhuXBtBAOuvDD2mXjlptBYLw_NL9KXvIomxHRxi6ts=','Education','Caregiver Training Program','Empowering families with knowledge, skills, and tools for effective caregiving journeys.')
+      ] %}
+      <a class="prog-card" href="{{ url_for('public.programs') }}" style="text-decoration:none">
+        <img src="{{ prog[0] }}" alt="{{ prog[2] }}" loading="lazy">
+        <div class="prog-overlay"></div>
+        <div class="prog-content">
+          <div class="prog-tag">{{ prog[1] }}</div>
+          <h3>{{ prog[2] }}</h3>
+          <p>{{ prog[3] }}</p>
+          <span class="prog-learn">Learn more →</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background:var(--cream)">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Voices That Matter</span>
+      <h2 class="section-title">Stories of Hope & <em style="font-style:italic;color:var(--teal)">Resilience</em></h2>
+    </div>
+    <div class="test-grid">
+      {% for t in [
+        ('PAAI gave me the courage to speak up about my treatment options. Their advocacy team helped me navigate insurance disputes that felt impossible to resolve alone.','Meera Sharma','Cancer Survivor, Delhi','https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=100&q=80'),
+        ('As a caregiver for my elderly mother, I felt completely overwhelmed. PAAI\'s support network connected me with others who truly understood.','Rajesh Kumar','Caregiver & Member, Mumbai','https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&q=80'),
+        ('Our NGO partnered with PAAI and within months we tripled our outreach capacity. The collaborative network they\'ve built is extraordinary.','Dr. Anita Rao','NGO Director, Bengaluru','https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80')
+      ] %}
+      <div class="test-card">
+        <div class="test-quote">"</div>
+        <p class="test-text">{{ t[0] }}</p>
+        <div class="test-author">
+          <img class="test-avatar" src="{{ t[3] }}" alt="{{ t[1] }}" loading="lazy">
+          <div><div class="test-name">{{ t[1] }}</div><div class="test-role">{{ t[2] }}</div></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- LATEST NEWS -->
+{% if news %}
+<section class="section">
+  <div class="container">
+    <div class="section-header" style="display:flex;align-items:center;justify-content:space-between">
+      <div><span class="section-label">Latest News</span><h2 class="section-title" style="margin-bottom:0">Recent Updates</h2></div>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('public.news') }}">View All</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem">
+      {% for post in news %}
+      <a href="{{ url_for('public.news_detail', slug=post.slug) }}" style="text-decoration:none;background:white;border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:transform .2s,box-shadow .2s;display:block" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 35px rgba(13,124,106,.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        {% if post.cover_image %}<img src="/static/uploads/{{ post.cover_image }}" alt="{{ post.title }}" style="width:100%;height:180px;object-fit:cover">{% else %}<div style="height:180px;background:linear-gradient(135deg,var(--teal-pale),white);display:flex;align-items:center;justify-content:center"><span style="font-size:3rem">📰</span></div>{% endif %}
+        <div style="padding:1.5rem">
+          <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">{{ post.category }}</div>
+          <div style="font-size:15px;font-weight:600;color:var(--slate);line-height:1.4;margin-bottom:.5rem">{{ post.title }}</div>
+          <div style="font-size:13px;color:var(--slate-light);line-height:1.6">{{ post.excerpt or '' | truncate(100) }}</div>
+          <div style="font-size:12px;color:var(--slate-light);margin-top:.75rem">{{ post.published_at.strftime('%b %d, %Y') if post.published_at else '' }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- NEWSLETTER -->
+<section class="section newsletter">
+  <div class="container newsletter-inner">
+    <div>
+      <h2>Stay Connected to <em style="font-style:italic;color:#f0c96e">India's</em> Patient Advocacy Movement</h2>
+      <p>Get updates on healthcare policy, advocacy campaigns, events, and resources delivered to your inbox.</p>
+    </div>
+    <div>
+      <div class="nl-form">
+        <input class="nl-input" id="nlEmail" type="email" placeholder="Enter your email address">
+        <button class="btn btn-gold btn-lg" onclick="subscribeNewsletter()">Subscribe</button>
+      </div>
+      <p style="font-size:12px;color:rgba(255,255,255,.5);margin-top:10px">Join 15,000+ subscribers. No spam, unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+function subscribeNewsletter(){
+  const e=document.getElementById('nlEmail').value.trim();
+  if(!e||!e.includes('@')){alert('Please enter a valid email.');return;}
+  fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})})
+    .then(()=>{document.getElementById('nlEmail').value='';alert('Thank you for subscribing!');});
+}
+// Counter animation
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const t=parseInt(el.dataset.count),d=2000,s=performance.now();
+  const u=n=>{const p=Math.min((n-s)/d,1),e=1-Math.pow(1-p,3),v=Math.round(e*t);el.textContent=v.toLocaleString('en-IN')+'+';if(p<1)requestAnimationFrame(u);};
+  requestAnimationFrame(u);
+});
+</script>
+{% endblock %}

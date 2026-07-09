@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Membership — PAAI{% endblock %}
+{% block content %}
+<style>
+.page-hero{padding:140px 2rem 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,#05352d,var(--teal))}
+.page-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1800&q=80')center/cover;opacity:.1}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,53,45,.93),rgba(20,168,142,.85))}
+.page-hero-content{position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center}
+.page-hero-content h1{font-size:3.5rem;color:white;font-weight:400;margin-bottom:1rem}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:4rem}
+.plan-card{background:white;border-radius:20px;padding:2rem;border:1.5px solid var(--border);position:relative;transition:transform .2s,box-shadow .2s}
+.plan-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(13,124,106,.12)}
+.plan-card.featured{border-color:var(--teal);background:linear-gradient(160deg,#f0fdf9,white)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--teal);color:white;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 16px;border-radius:100px}
+.plan-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem}
+.plan-name{font-size:1.3rem;color:var(--slate);margin-bottom:.5rem}
+.plan-desc{font-size:13px;color:var(--slate-light);line-height:1.5;margin-bottom:1.5rem}
+.plan-features{list-style:none;margin-bottom:2rem}
+.plan-features li{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}
+.plan-features li:last-child{border-bottom:none}
+.check{color:var(--teal);font-size:16px}
+.app-form{background:white;border-radius:20px;padding:3rem;border:1px solid var(--border);max-width:720px;margin:0 auto;box-shadow:0 10px 40px rgba(13,124,106,.08)}
+.form-errors{background:#fee2e2;border-radius:10px;padding:1rem;margin-bottom:1.5rem;font-size:14px;color:#991b1b}
+@media(max-width:900px){.plans{grid-template-columns:1fr}}
+</style>
+<div class="page-hero">
+  <div class="page-hero-bg"></div><div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">Membership</span>
+    <h1>Be Part of India's <em style="font-style:italic;color:#f0c96e">Advocacy Revolution</em></h1>
+    <p style = color:rgba(255,255,255,.9)>Join 2,400+ advocates, healthcare professionals, NGOs, and patient communities working together for equitable healthcare.</p>
+  </div>
+</div>
+<section class="section">
+  <div class="container">
+    <div class="section-header center"><span class="section-label">Membership Plans</span><h2 class="section-title">Choose Your Level of <em style="font-style:italic;color:var(--teal)">Engagement</em></h2></div>
+    <div class="plans">
+      {% for is_featured,icon_color,icon_svg,name,desc,features,btn_class in [
+        (False,'#e0f4f0','<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>','Individual Advocate','For patients, caregivers, survivors, and individuals passionate about advocacy.',[('Access to resource library',True),('Community forum access',True),('Event invitations',True),('Monthly newsletter',True),('Policy working groups',False)],'btn-secondary'),
+        (True,'#e0f4f0','<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>','Organizational Member','For NGOs, patient groups, foundations, and healthcare support organizations.',[('All Individual benefits',True),('Logo on PAAI website',True),('Policy working groups',True),('Co-branded campaigns',True),('Priority event access',True)],'btn-primary'),
+        (False,'#fef9e7','<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>','Corporate Partner','For healthcare corporations, hospitals, pharma companies, and health tech.',[('All Organizational benefits',True),('CSR collaboration',True),('Board representation',True),('Research partnerships',True),('Exclusive roundtables',True)],'btn-gold')
+      ] %}
+      <div class="plan-card {{ 'featured' if is_featured }}">
+        {% if is_featured %}<div class="plan-badge">Most Popular</div>{% endif %}
+        <div class="plan-icon" style="background:{{ icon_color }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ 'var(--teal)' if icon_color=='#e0f4f0' else 'var(--gold)' }}" stroke-width="2">{{ icon_svg | safe }}</svg></div>
+        <div class="plan-name" style="font-family:'Fraunces',serif">{{ name }}</div>
+        <div class="plan-desc">{{ desc }}</div>
+        <ul class="plan-features">
+          {% for feat,avail in features %}
+          <li><span class="{{ 'check' if avail }}" style="{{ 'color:#d1d5db' if not avail }}">{{ '✓' if avail else '—' }}</span><span style="{{ 'color:#9ca3af' if not avail }}">{{ feat }}</span></li>
+          {% endfor %}
+        </ul>
+        <a class="btn {{ btn_class }}" style="width:100%;justify-content:center" href="#apply">Apply Now</a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- APPLICATION FORM -->
+    <div id="apply" class="app-form">
+      <h2 style="font-size:1.8rem;color:var(--slate);margin-bottom:.5rem">Membership Application</h2>
+      <p style="font-size:14px;color:var(--slate-light);margin-bottom:2rem">Complete the form below. Our team reviews all applications within 5 business days.</p>
+      {% if form.errors %}
+      <div class="form-errors">Please correct the errors below before submitting.</div>
+      {% endif %}
+      <form method="POST" action="{{ url_for('public.membership') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+          <div class="form-group">
+            {{ form.full_name.label(class='form-label') }}
+            {{ form.full_name(class='form-control', placeholder='e.g. Meera Sharma') }}
+            {% for e in form.full_name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="form-group">
+            {{ form.email.label(class='form-label') }}
+            {{ form.email(class='form-control', placeholder='meera@example.com') }}
+            {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            {{ form.phone.label(class='form-label') }}
+            {{ form.phone(class='form-control', placeholder='+91 98765 43210') }}
+          </div>
+          <div class="form-group">
+            {{ form.membership_type.label(class='form-label') }}
+            {{ form.membership_type(class='form-control') }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            {{ form.organization.label(class='form-label') }}
+            {{ form.organization(class='form-control', placeholder='Organization name (if applicable)') }}
+          </div>
+          <div class="form-group">
+            {{ form.city.label(class='form-label') }}
+            {{ form.city(class='form-control', placeholder='e.g. New Delhi, Delhi') }}
+          </div>
+        </div>
+        <div class="form-group">
+          {{ form.message.label(class='form-label') }}
+          {{ form.message(class='form-control', placeholder='Tell us about your background and interest in patient advocacy...') }}
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:1.5rem">
+          {{ form.submit(class='btn btn-primary') }}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Resources — PAAI{% endblock %}
+{% block content %}
+<style>
+.page-hero{padding:140px 2rem 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,#05352d,var(--teal))}
+.page-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1800&q=80')center/cover;opacity:.1}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,53,45,.95),rgba(13,124,106,.88))}
+.page-hero-content{position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center}
+.page-hero-content h1{font-size:3.5rem;color:white;font-weight:400;margin-bottom:1rem}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem}
+.filter-btn{padding:7px 18px;border-radius:100px;border:1.5px solid var(--border);background:white;font-size:13px;color:var(--slate-light);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.filter-btn:hover,.filter-btn.active{border-color:var(--teal);color:var(--teal);background:var(--teal-pale)}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.res-card{background:white;border-radius:16px;padding:1.8rem;border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.res-card:hover{transform:translateY(-4px);box-shadow:0 12px 35px rgba(13,124,106,.10)}
+.res-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.res-tag{font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+.res-title{font-size:15px;font-weight:600;color:var(--slate);margin-bottom:.5rem}
+.res-desc{font-size:13px;color:var(--slate-light);line-height:1.6}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--slate-light)}
+@media(max-width:900px){.res-grid{grid-template-columns:1fr}}
+</style>
+<div class="page-hero">
+  <div class="page-hero-bg"></div><div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">Resource Library</span>
+    <h1>Knowledge is the Best <em style="font-style:italic;color:#f0c96e">Medicine</em></h1>
+    <p style = color:rgba(255,255,255,.9)>Access guides, toolkits, research, and educational resources designed for Indian patients, caregivers, and advocates.</p>
+  </div>
+</div>
+<section class="section">
+  <div class="container">
+    <div class="filter-bar">
+      <a class="filter-btn {{ 'active' if not active_category }}" href="{{ url_for('public.resources') }}">All Resources</a>
+      {% for cat in ['Patient Rights','Insurance','Mental Health','Rare Disease','Caregiver','Legal'] %}
+      <a class="filter-btn {{ 'active' if active_category == cat }}" href="{{ url_for('public.resources', category=cat) }}">{{ cat }}</a>
+      {% endfor %}
+    </div>
+    {% if resources %}
+    <div class="res-grid">
+      {% for r in resources %}
+      <div class="res-card">
+        <div class="res-icon" style="background:var(--teal-pale)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        </div>
+        <div class="res-tag">{{ r.category }} · {{ r.resource_type }}</div>
+        <div class="res-title">{{ r.title }}</div>
+        <div class="res-desc">{{ r.description or '' }}</div>
+        <a class="btn btn-secondary btn-sm" style="margin-top:1rem" href="{{ url_for('public.download_resource', resource_id=r.id) }}">
+          Download {{ r.resource_type }}
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div style="font-size:3rem;margin-bottom:1rem">📂</div>
+      <h3 style="color:var(--slate);margin-bottom:.5rem">No resources found</h3>
+      <p>Resources will appear here once added by the admin team.</p>
+      <a class="btn btn-primary btn-sm" style="margin-top:1rem" href="{{ url_for('public.resources') }}">View All Resources</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

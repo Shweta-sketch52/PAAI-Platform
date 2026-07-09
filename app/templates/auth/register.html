@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Create Account — PAAI{% endblock %}
+{% block content %}
+<style>
+.auth-page{min-height:100vh;background:linear-gradient(135deg,var(--cream),#e8f7f4);display:flex;align-items:center;justify-content:center;padding:100px 2rem 2rem}
+.auth-card{background:white;border-radius:24px;padding:3rem;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(13,124,106,.12);border:1px solid var(--border)}
+.auth-switch{text-align:center;font-size:14px;color:var(--slate-light);margin-top:1.5rem}
+.auth-switch a{color:var(--teal);font-weight:500;text-decoration:none}
+</style>
+<div class="auth-page">
+  <div class="auth-card">
+    <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:2rem">
+      <div class="nav-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg></div>
+      <span style="font-family:'Fraunces',serif;font-size:20px;color:var(--slate);font-weight:600">PAAI</span>
+    </div>
+    <h2 style="font-size:1.8rem;color:var(--slate);text-align:center;margin-bottom:.5rem">Create Your Account</h2>
+    <p style="font-size:14px;color:var(--slate-light);text-align:center;margin-bottom:2rem">Join India's patient advocacy community</p>
+    <form method="POST" action="{{ url_for('auth.register') }}">
+      {{ form.hidden_tag() }}
+      <div class="form-group">{{ form.full_name.label(class='form-label') }}{{ form.full_name(class='form-control',placeholder='Your full name') }}{% for e in form.full_name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <div class="form-group">{{ form.email.label(class='form-label') }}{{ form.email(class='form-control',placeholder='you@example.com') }}{% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <div class="form-row">
+        <div class="form-group">{{ form.city.label(class='form-label') }}{{ form.city(class='form-control',placeholder='City') }}</div>
+        <div class="form-group">{{ form.state.label(class='form-label') }}{{ form.state(class='form-control',placeholder='State') }}</div>
+      </div>
+      <div class="form-group">{{ form.password.label(class='form-label') }}{{ form.password(class='form-control',placeholder='Min 8 chars, 1 uppercase, 1 number') }}{% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <div class="form-group">{{ form.confirm_pw.label(class='form-label') }}{{ form.confirm_pw(class='form-control',placeholder='Confirm your password') }}{% for e in form.confirm_pw.errors %}<div class="form-error">{{ e }}</div>{% endfor %}</div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:.5rem" type="submit">Create Account</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+  </div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block chatbot %}{% endblock %}

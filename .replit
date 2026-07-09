@@ -1,0 +1,17 @@
+run = "python main.py"
+entrypoint = "main.py"
+language = "python3"
+
+[nix]
+channel = "stable-23_11"
+
+[unitTest]
+language = "python3"
+
+[deployment]
+run = ["sh", "-c", "gunicorn -w 2 -b 0.0.0.0:$PORT main:app"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

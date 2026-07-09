@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — PAAI{% endblock %}
+{% block content %}
+<div style="min-height:100vh;background:linear-gradient(135deg,#0d1b2a,#1a2f3f);display:flex;align-items:center;justify-content:center;padding:2rem">
+  <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:3rem;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:2rem">
+      <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
+      <span style="font-family:'Fraunces',serif;font-size:20px;color:white;font-weight:600">Admin Portal</span>
+    </div>
+    <h2 style="font-size:1.8rem;color:white;text-align:center;margin-bottom:.5rem">Admin Access</h2>
+    <p style="font-size:14px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:2rem">PAAI Administrative Dashboard</p>
+    <form method="POST" action="{{ url_for('auth.admin_login') }}">
+      {{ form.hidden_tag() }}
+      <div class="form-group"><label class="form-label" style="color:rgba(255,255,255,.7)">Admin Email</label>{{ form.email(class='form-control',placeholder='admin@paai.org.in',style='background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:white') }}{% for e in form.email.errors %}<div class="form-error" style="color:#f87171">{{ e }}</div>{% endfor %}</div>
+      <div class="form-group"><label class="form-label" style="color:rgba(255,255,255,.7)">Password</label>{{ form.password(class='form-control',placeholder='Admin password',style='background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:white') }}</div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:.5rem" type="submit">Access Dashboard</button>
+    </form>
+    <p style="text-align:center;font-size:14px;color:rgba(255,255,255,.4);margin-top:1.5rem">Return to <a href="{{ url_for('auth.login') }}" style="color:var(--teal-light)">member login</a></p>
+  </div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block chatbot %}{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Profile — PAAI{% endblock %}
+{% block dash_content %}
+<div class="dash-header"><h1>My Profile</h1><p>Your PAAI member information.</p></div>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:2rem">
+  <div class="dash-card" style="text-align:center;height:fit-content">
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-light));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:28px;margin:0 auto 1rem">{{ current_user.get_initials() }}</div>
+    <div style="font-size:1.1rem;font-weight:600;color:var(--slate)">{{ current_user.full_name }}</div>
+    <div style="font-size:13px;color:var(--teal);margin-top:4px">{{ current_user.role.title() }} Member</div>
+    <div style="font-size:12px;color:var(--slate-light);margin-top:4px">Member since {{ current_user.created_at.strftime('%B %Y') }}</div>
+    {% if current_user.city %}<div style="font-size:12px;color:var(--slate-light);margin-top:2px">📍 {{ current_user.city }}{% if current_user.state %}, {{ current_user.state }}{% endif %}</div>{% endif %}
+    <a class="btn btn-secondary btn-sm" style="margin-top:1.5rem;width:100%;justify-content:center" href="{{ url_for('public.membership') }}">Apply / Update Membership</a>
+  </div>
+  <div class="dash-card">
+    <div class="dash-card-title">Account Details</div>
+    {% for label,val in [('Full Name',current_user.full_name),('Email Address',current_user.email),('Phone',current_user.phone or '—'),('City',current_user.city or '—'),('State',current_user.state or '—'),('Account Role',current_user.role.title()),('Last Login',current_user.last_login.strftime('%b %d, %Y %I:%M %p') if current_user.last_login else 'First login')] %}
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px">
+      <span style="color:var(--slate-light)">{{ label }}</span>
+      <strong style="color:var(--slate)">{{ val }}</strong>
+    </div>
+    {% endfor %}
+    <div style="margin-top:1.5rem;padding:1rem;background:var(--teal-pale);border-radius:12px;font-size:13px;color:var(--teal-dark)">
+      ℹ️ To update your profile information, please contact <strong>info@paai.org.in</strong> or call <strong>+91 11 2345 6789</strong>.
+    </div>
+  </div>
+</div>
+{% endblock %}

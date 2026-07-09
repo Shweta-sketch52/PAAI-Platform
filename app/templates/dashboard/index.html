@@ -1,0 +1,128 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Dashboard — PAAI{% endblock %}
+{% block dash_content %}
+<div class="dash-header">
+  <h1>Good day, {{ current_user.full_name.split()[0] }} 👋</h1>
+  <p>Here's what's happening with your PAAI membership today.</p>
+</div>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="label">Membership</div>
+    <div class="value" style="font-size:1.1rem;margin-top:.4rem">
+      {% if membership %}
+        <span class="status-badge status-{{ membership.status }}">{{ membership.status.title() }}</span>
+      {% else %}
+        <span class="status-badge" style="background:#f3f4f6;color:#6b7280">Not Applied</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Saved Resources</div>
+    <div class="value">{{ saved_count }}</div>
+    <div class="note" style="color:var(--teal)">resources bookmarked</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Events Registered</div>
+    <div class="value">{{ events_count }}</div>
+    <div class="note" style="color:var(--gold)">{{ upcoming_events|length }} upcoming</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Member Since</div>
+    <div class="value" style="font-size:1.1rem">{{ current_user.created_at.strftime('%b %Y') }}</div>
+    <div class="note" style="color:var(--slate-light)">{{ current_user.city or 'India' }}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem">
+  <div class="dash-card">
+    <div class="dash-card-title">Recent Notifications
+      {% if unread_count > 0 %}
+        <span style="background:var(--teal);color:white;border-radius:100px;font-size:11px;padding:2px 8px;margin-left:8px">{{ unread_count }} new</span>
+      {% endif %}
+    </div>
+    {% if notifications %}
+      {% for n in notifications[:5] %}
+      <div class="notif-item">
+        <div class="notif-dot {{ 'read' if n.is_read }}"></div>
+        <div>
+          <div class="notif-text">{{ n.message }}</div>
+          <div class="notif-time">{{ n.created_at.strftime('%b %d, %Y · %I:%M %p') }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="text-align:center;padding:2rem;color:var(--slate-light)">
+        <div style="font-size:2.5rem;margin-bottom:.75rem">🔔</div>
+        <p style="font-size:14px">No notifications yet. We'll let you know when something important happens.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-title">Membership Details</div>
+    {% if membership %}
+    <div style="font-size:13px;color:var(--slate-light)">
+      {% for label,val,color in [
+        ('Plan', membership.membership_type, 'var(--slate)'),
+        ('Status', membership.status.title(), 'var(--teal)' if membership.status=='approved' else 'var(--gold)'),
+        ('Applied', membership.submitted_at.strftime('%b %d, %Y'), 'var(--slate)'),
+        ('Location', (membership.city or '') + (', ' + membership.state if membership.state else ''), 'var(--slate)')
+      ] %}
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span>{{ label }}</span><strong style="color:{{ color }}">{{ val }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+    {% if membership.status == 'pending' %}
+    <div style="background:#fef3c7;border-radius:10px;padding:12px;margin-top:1rem;font-size:13px;color:#92400e">
+      ⏳ Your application is under review. We'll notify you within 5 business days.
+    </div>
+    {% elif membership.status == 'approved' %}
+    <div style="background:#d1fae5;border-radius:10px;padding:12px;margin-top:1rem;font-size:13px;color:#065f46">
+      ✓ Your membership is active. Thank you for being part of PAAI!
+    </div>
+    {% endif %}
+    {% else %}
+    <div style="text-align:center;padding:1.5rem">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">🏥</div>
+      <p style="font-size:14px;color:var(--slate-light);margin-bottom:1rem">You haven't applied for membership yet.</p>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('public.membership') }}">Apply Now</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if upcoming_events %}
+<div class="dash-card">
+  <div class="dash-card-title">Upcoming Events I'm Registered For</div>
+  {% for reg in upcoming_events %}
+  <div style="display:grid;grid-template-columns:auto 1fr;background:var(--cream);border-radius:12px;overflow:hidden;margin-bottom:.75rem">
+    <div style="background:var(--teal);color:white;padding:1.2rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:70px">
+      <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:600;line-height:1">{{ reg.event.event_date.strftime('%d') }}</div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.85">{{ reg.event.event_date.strftime('%b') }}</div>
+    </div>
+    <div style="padding:1rem 1.2rem">
+      <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;margin-bottom:.25rem">{{ reg.event.event_type }}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--slate);margin-bottom:.25rem">{{ reg.event.title }}</div>
+      <div style="font-size:12px;color:var(--slate-light)">📍 {{ reg.event.location or 'TBA' }} · ⏰ {{ reg.event.event_date.strftime('%I:%M %p IST') }}</div>
+    </div>
+  </div>
+  {% endfor %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('dashboard.events') }}">View All Registered Events</a>
+</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+  <div class="dash-card" style="background:linear-gradient(135deg,var(--teal-dark),var(--teal));border:none">
+    <h3 style="font-size:1.2rem;color:white;font-weight:400;margin-bottom:.75rem">Explore Resources</h3>
+    <p style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:1rem">Access patient rights guides, insurance toolkits, mental health resources and more.</p>
+    <a class="btn btn-white btn-sm" href="{{ url_for('public.resources') }}">Browse Library</a>
+  </div>
+  <div class="dash-card" style="background:linear-gradient(135deg,#3d2c00,var(--gold));border:none">
+    <h3 style="font-size:1.2rem;color:white;font-weight:400;margin-bottom:.75rem">Upcoming Events</h3>
+    <p style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:1rem">Register for webinars, workshops, and advocacy summits happening across India.</p>
+    <a class="btn btn-white btn-sm" href="{{ url_for('public.news') }}">View Events</a>
+  </div>
+</div>
+{% endblock %}

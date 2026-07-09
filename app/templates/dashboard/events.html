@@ -1,0 +1,35 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Events — PAAI{% endblock %}
+{% block dash_content %}
+<div class="dash-header">
+  <h1>My Events</h1>
+  <p>Events you have registered for.</p>
+</div>
+{% if registrations %}
+<div style="display:flex;flex-direction:column;gap:1rem">
+  {% for reg in registrations %}
+  <div style="display:grid;grid-template-columns:auto 1fr auto;background:white;border-radius:16px;overflow:hidden;border:1px solid var(--border);align-items:center">
+    <div style="background:{{ 'var(--teal)' if reg.event.event_date > now else 'var(--slate-light)' }};color:white;padding:1.5rem 1.2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px">
+      <div style="font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;line-height:1">{{ reg.event.event_date.strftime('%d') }}</div>
+      <div style="font-size:11px;text-transform:uppercase;opacity:.85">{{ reg.event.event_date.strftime('%b %Y') }}</div>
+    </div>
+    <div style="padding:1.2rem 1.5rem">
+      <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;margin-bottom:.25rem">{{ reg.event.event_type }}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--slate);margin-bottom:.25rem">{{ reg.event.title }}</div>
+      <div style="font-size:13px;color:var(--slate-light)">📍 {{ reg.event.location or 'TBA' }} &nbsp;·&nbsp; ⏰ {{ reg.event.event_date.strftime('%I:%M %p IST') }}</div>
+    </div>
+    <div style="padding:1.2rem">
+      {% if reg.event.event_date > now %}<span class="status-badge status-approved">Upcoming</span>{% else %}<span class="status-badge status-rejected">Past</span>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:4rem;background:white;border-radius:16px;border:1px solid var(--border)">
+  <div style="font-size:3rem;margin-bottom:1rem">📅</div>
+  <h3 style="color:var(--slate);margin-bottom:.5rem">No events registered yet</h3>
+  <p style="font-size:14px;color:var(--slate-light);margin-bottom:1.5rem">Browse our upcoming webinars, workshops, and conferences.</p>
+  <a class="btn btn-primary" href="{{ url_for('public.news') }}">View Upcoming Events</a>
+</div>
+{% endif %}
+{% endblock %}

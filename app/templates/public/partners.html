@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}About Us — PAAI{% endblock %}
+{% block content %}
+<style>
+.page-hero{padding:140px 2rem 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a2818,var(--teal-dark))}
+.page-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1800&q=80')center/cover;opacity:.12}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,40,24,.95),rgba(13,124,106,.85))}
+.page-hero-content{position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center}
+.page-hero-content h1{font-size:3.5rem;color:white;font-weight:400;margin-bottom:1rem}
+.page-hero-content p{font-size:17px;color:rgba(255,255,255,.8);line-height:1.7}
+.mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.mv-card{background:white;border-radius:18px;padding:2.5rem;border:1px solid var(--border);position:relative;overflow:hidden}
+.mv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--teal),var(--teal-light))}
+.mv-icon{width:52px;height:52px;background:var(--teal-pale);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem}
+.mv-card h3{font-size:1.3rem;color:var(--slate);margin-bottom:.75rem;font-weight:400}
+.mv-card p{font-size:14px;color:var(--slate-light);line-height:1.7}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.team-card{text-align:center;border-radius:18px;overflow:hidden;background:white;border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.team-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(13,124,106,.12)}
+.team-img{aspect-ratio:1;overflow:hidden}
+.team-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.team-card:hover .team-img img{transform:scale(1.06)}
+.team-info{padding:1.2rem}
+.team-name{font-size:15px;font-weight:600;color:var(--slate)}
+.team-title{font-size:12px;color:var(--teal);margin-top:4px}
+@media(max-width:900px){.mv-grid,.why-grid,.team-grid{grid-template-columns:1fr}}
+</style>
+<div class="page-hero">
+  <div class="page-hero-bg"></div><div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <span class="section-label" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">About PAAI</span>
+    <h1>Advocating for Every <em style="font-style:italic;color:#f0c96e">Patient,</em> Every Day</h1>
+    <p>Founded in 2012, PAAI is India's most comprehensive patient advocacy platform, bridging the gap between patients and a better healthcare system.</p>
+  </div>
+</div>
+<section class="section">
+  <div class="container">
+    <div class="mv-grid">
+      {% for icon,title,text in [
+        ('<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>','Our Mission','To empower patients and caregivers across India by providing advocacy, education, and support services that improve health outcomes and amplify patient voices in policy-making.'),
+        ('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>','Our Vision','A healthcare ecosystem where every Indian patient receives dignified, accessible, and equitable care — supported by a strong network of informed advocates.'),
+        ('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>','Our Values','Compassion, transparency, inclusivity, and evidence-based advocacy form the cornerstone of everything PAAI does — from grassroots support to national policy engagement.'),
+        ('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>','Our Approach','We work collaboratively with patients, NGOs, medical professionals, government agencies, and corporations to create lasting systemic change in India\'s healthcare landscape.')
+      ] %}
+      <div class="mv-card">
+        <div class="mv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">{{ icon | safe }}</svg></div>
+        <h3>{{ title }}</h3><p>{{ text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="section" style="background:var(--cream)">
+  <div class="container">
+    <div class="why-grid">
+      <div>
+        <span class="section-label">Our Story</span>
+        <h2 class="section-title">A Decade of <em style="font-style:italic;color:var(--teal)">Relentless</em> Advocacy</h2>
+        <p style="color:var(--slate-light);font-size:15px;line-height:1.75;margin-bottom:1rem">PAAI was born from a simple observation: India's healthcare system, despite its advances, often left patients feeling voiceless and alone.</p>
+        <p style="color:var(--slate-light);font-size:15px;line-height:1.75;margin-bottom:1rem">Our founders — patient advocates, former patients, and healthcare professionals — came together in 2012 to create a platform that would change that reality.</p>
+        <p style="color:var(--slate-light);font-size:15px;line-height:1.75;margin-bottom:1.5rem">Today, with over 2,400 members and 180+ partner organizations, PAAI has become the backbone of India's patient advocacy movement.</p>
+        <a class="btn btn-primary" href="{{ url_for('public.membership') }}">Become a Member</a>
+      </div>
+      <div><div style="border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(13,124,106,.15)"><img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=700&q=80" alt="Community" style="width:100%;height:400px;object-fit:cover" loading="lazy"></div></div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-label">Leadership</span>
+      <h2 class="section-title">The Team Behind the <em style="font-style:italic;color:var(--teal)">Movement</em></h2>
+    </div>
+    <div class="team-grid">
+      {% for name,title,img in [
+        ('Dr. Priya Nair','Founder & Executive Director','https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&q=80'),
+        ('Arvind Mehta','Director of Policy Affairs','https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300&q=80'),
+        ('Dr. Sunita Rao','Head of Community Programs','https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80'),
+        ('Vikram Singh','Operations & Partnerships','https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80')
+      ] %}
+      <div class="team-card">
+        <div class="team-img"><img src="{{ img }}" alt="{{ name }}" loading="lazy"></div>
+        <div class="team-info"><div class="team-name">{{ name }}</div><div class="team-title">{{ title }}</div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
