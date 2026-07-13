@@ -30,4 +30,4 @@ pillow==11.2.1
 openai==1.77.0
 
 # Production server (Linux/Mac only — skip on Windows dev)
-# gunicorn==23.0.0
+gunicorn==23.0.0
