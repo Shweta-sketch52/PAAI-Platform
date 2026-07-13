@@ -19,6 +19,9 @@ def create_app(config_name='default'):
     login_manager.login_message = 'Please sign in to access this page.'
     login_manager.login_message_category = 'info'
 
+    # Import models so SQLAlchemy registers all tables
+    from . import models
+    
     # Register blueprints
     from .routes.public import public_bp
     from .routes.auth import auth_bp
@@ -39,5 +42,9 @@ def create_app(config_name='default'):
     # Create upload directory
     import os
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    # Create database tables if they don't exist
+    with app.app_context():
+        db.create_all()
 
     return app
