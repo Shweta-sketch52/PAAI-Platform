@@ -2,6 +2,7 @@ from flask import Flask
 from config import config
 from .extensions import db, migrate, login_manager, bcrypt, csrf, mail
 
+
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -21,7 +22,7 @@ def create_app(config_name='default'):
 
     # Import models so SQLAlchemy registers all tables
     from . import models
-    
+
     # Register blueprints
     from .routes.public import public_bp
     from .routes.auth import auth_bp
@@ -46,5 +47,14 @@ def create_app(config_name='default'):
     # Create database tables if they don't exist
     with app.app_context():
         db.create_all()
+
+        from .models import User
+
+        # Seed only if the admin user doesn't exist
+        if not User.query.filter_by(email="admin@paai.org.in").first():
+            from seed import seed
+
+            print("No admin found. Running database seed...")
+            seed()
 
     return app
